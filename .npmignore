@@ -1,0 +1,15 @@
+test
+src
+lib
+build
+config
+coverage
+.directory
+.eslintrc
+.gitignore
+.travis.yml
+Makefile
+*.tgz
+*.js
+*.bak
+*.vue

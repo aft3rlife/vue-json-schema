@@ -1,48 +1,44 @@
 var path = require('path')
 var webpack = require('webpack')
 
-function resolve (dir) {
-  return path.join(__dirname, dir)
+function resolve (file) {
+  return path.join(__dirname, file)
 }
 
-
 module.exports = {
-  entry: './src/main.js',
+  entry: resolve('src/components/FormSchema.js'),
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
-    filename: 'build.js'
+    path: resolve('dist'),
+    filename: 'vue-json-schema.js',
+    libraryTarget: 'umd',
+    library: 'vue-json-schema',
+    umdNamedDefine: true
   },
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-          }
-          // other vue-loader options go here
-        }
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: [resolve('src'), resolve('test')]
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        include: __dirname,
         exclude: /node_modules/,
-        include: [resolve('lib'), resolve('components'), resolve('test')]
+        query: { compact: false }
       }
     ]
   },
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js'
-    }
-  },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true
-  },
-  performance: {
-    hints: false
-  },
-  devtool: '#eval-source-map'
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin( {
+      minimize : true,
+      sourceMap : false,
+      mangle: true,
+      parallel: true,
+      compress: true
+    })
+  ],
+  externals: {}
 }
